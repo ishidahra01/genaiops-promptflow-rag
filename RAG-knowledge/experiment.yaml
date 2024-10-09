@@ -54,7 +54,7 @@ connections:
 #          `${data.<column_name>}`.
 
 datasets:
-- name: RAG-knowledge-data
+- name: RAG-knowledge-dataset
   source: data/inputs.jsonl
   description: "This dataset is for prompt experiments."
   mappings:
@@ -111,7 +111,7 @@ evaluators:
   flow: flows/evaluation
   datasets:
   - name: RAG-knowledge-evaluation-data
-    reference: RAG-knowledge-data
+    reference: RAG-knowledge-dataset
     source: data/eval_data.jsonl
     description: "This dataset is for evaluating flows."
     mappings:
