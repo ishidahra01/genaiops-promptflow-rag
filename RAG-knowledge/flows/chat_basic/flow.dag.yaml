@@ -1,0 +1,30 @@
+id: template_chat_flow
+name: Template Chat Flow
+inputs:
+  chat_history:
+    type: list
+    is_chat_input: false
+    is_chat_history: true
+  question:
+    type: string
+    is_chat_input: true
+outputs:
+  answer:
+    type: string
+    reference: ${hybrid_semantic_pipeline.output.final_answer}
+    is_chat_output: true
+  result:
+    type: string
+    reference: ${hybrid_semantic_pipeline.output}
+nodes:
+- name: hybrid_semantic_pipeline
+  type: python
+  source:
+    type: code
+    path: hybrid_semantic_pipeline.py
+  inputs:
+    question: ${inputs.question}
+  use_variants: false
+node_variants: {}
+environment:
+  python_requirements_txt: requirements.txt

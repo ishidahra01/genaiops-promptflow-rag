@@ -169,10 +169,8 @@ def prepare_and_execute(
                 run_data_name = run_data_id.split(":")[1]
                 run_dataset = experiment.get_dataset(run_data_name)
             else:
-                run_data_name = os.path.sep.join(run_data_id.split(
-                    os.path.sep)[-2:]
-                    )
-                print(run_data_name)
+                run_data_name = "/".join(run_data_id.split("/")[-2:])
+                print(f"run_data_name: {run_data_name}")
                 for ds in experiment.datasets:
                     print(ds.dataset.source)
                     if ds.dataset.source == run_data_name:
