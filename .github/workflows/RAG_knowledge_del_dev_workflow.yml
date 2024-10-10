@@ -23,6 +23,11 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      # Install Azure ML extension for CLI
+      - name: Install Azure ML CLI extension
+        run: |
+          az extension add --name ml
+
       # Set the endpoint name directly as a fixed value
       - name: Set fixed endpoint name
         run: |
