@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      # Checkout the repository
+      # Checkout the repository to access deployment_config.json
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -23,17 +23,19 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Install Azure ML extension for CLI
+      # Install Azure ML CLI extension
       - name: Install Azure ML CLI extension
         run: |
           az extension add --name ml
 
-      # Set the endpoint name directly as a fixed value
-      - name: Set fixed endpoint name
+      # Set the endpoint name and other variables directly
+      - name: Set fixed values
         run: |
           echo "ENDPOINT_NAME=pf-rag-knowledge-endpoint" >> $GITHUB_ENV
+          echo "RESOURCE_GROUP_NAME=llmops-workshop-hishida" >> $GITHUB_ENV  # リソースグループ名を指定
+          echo "WORKSPACE_NAME=llmops-workshop-hishida" >> $GITHUB_ENV  # ワークスペース名を指定
 
       # Delete the AzureML online endpoint using Azure CLI
       - name: Delete AzureML Online Endpoint
         run: |
-          az ml online-endpoint delete --name $ENDPOINT_NAME --yes
+          az ml online-endpoint delete --name $ENDPOINT_NAME --resource-group $RESOURCE_GROUP_NAME --workspace-name $WORKSPACE_NAME --yes
