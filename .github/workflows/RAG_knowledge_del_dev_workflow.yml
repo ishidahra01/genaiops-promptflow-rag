@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      # Checkout the repository to access deployment_config.json
+      # Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -23,12 +23,10 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Read the endpoint name from the deployment_config.json file in the configs folder
-      - name: Read deployment_config.json
-        id: get-endpoint-name
+      # Set the endpoint name directly as a fixed value
+      - name: Set fixed endpoint name
         run: |
-          ENDPOINT_NAME=$(cat ${{ inputs.use_case_base_path }}/configs/deployment_config.json | jq -r '.azure_managed_endpoint[] | select(.ENV_NAME=="dev") | .ENDPOINT_NAME')
-          echo "ENDPOINT_NAME=$ENDPOINT_NAME" >> $GITHUB_ENV
+          echo "ENDPOINT_NAME=pf-rag-knowledge-endpoint" >> $GITHUB_ENV
 
       # Delete the AzureML online endpoint using Azure CLI
       - name: Delete AzureML Online Endpoint
