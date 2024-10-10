@@ -1,0 +1,36 @@
+name: Delete AzureML Online Endpoint
+
+on:
+  # Manual trigger for execution
+  workflow_dispatch:
+  
+  # Scheduled execution (runs at 10 PM JST every day)
+  schedule:
+    - cron: "0 13 * * *"  # Runs at 1 PM UTC, which is 10 PM JST
+
+jobs:
+  delete-azureml-endpoint:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Checkout the repository to access deployment_config.json
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Azure login using service principal credentials
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Read the endpoint name from the deployment_config.json file in the configs folder
+      - name: Read deployment_config.json
+        id: get-endpoint-name
+        run: |
+          ENDPOINT_NAME=$(cat ${{ inputs.use_case_base_path }}/configs/deployment_config.json | jq -r '.azure_managed_endpoint[] | select(.ENV_NAME=="dev") | .ENDPOINT_NAME')
+          echo "ENDPOINT_NAME=$ENDPOINT_NAME" >> $GITHUB_ENV
+
+      # Delete the AzureML online endpoint using Azure CLI
+      - name: Delete AzureML Online Endpoint
+        run: |
+          az ml online-endpoint delete --name $ENDPOINT_NAME --yes
